@@ -5,23 +5,13 @@
  */
 package pkgfinal;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JOptionPane;
-
 /**
  *
  * @author Nicolas Bryan
  */
 public class Login extends javax.swing.JFrame {
-    private Connection con = null;
-    private Statement st = null;
-    private Control c = null;
+    
+    private Control c;
     /**
      * Creates new form Login
      */
@@ -31,11 +21,6 @@ public class Login extends javax.swing.JFrame {
         c = new Control();
     }
     
-    public Login(Statement st)
-    {
-        initComponents();
-        this.st = st;
-    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -125,64 +110,25 @@ public class Login extends javax.swing.JFrame {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         
         String user = jTextField1.getText(); 
-        String pass = jPasswordField1.getText(); 
-         
-        c.setUsername(user); 
-        c.setPassword(pass); 
+        String pass = jPasswordField1.getText();  
 
-        if(!c.loginSuccess())  
+        if(!c.tryLogin(user,pass))  
         { 
             jLabel4.setText("Login Failed! User not Founnd!"); 
         } 
-
-        if (c.isAdmin()) { 
-            scheduleTable homeA = new scheduleTable(c); 
-            homeA.setVisible(true); 
-        } else { 
-            scheduleTable_Staff homeS = new scheduleTable_Staff(c); 
-            homeS.setVisible(true); 
+        else
+        {
+            if (c.isAdmin(user)) {
+                scheduleTable homeA = new scheduleTable();
+                homeA.setVisible(true);
+            } else {
+                scheduleTable_Staff homeS = new scheduleTable_Staff();
+                homeS.setVisible(true);
+            }
         }
+        
         this.dispose();
         
-        /*
-        try 
-        {
-            String user= jTextField1.getText();
-            String pass= jPasswordField1.getText();
-            ResultSet rs=null;
-            rs=st.executeQuery("SELECT * FROM `user` WHERE Username = '"+user+"'");
-            if(rs.next())
-            {
-                String password=rs.getString("Password");
-                if(password.equals(pass))
-                {
-                    if(user.equals("admin"))
-                    {
-                        scheduleTable homeA = new scheduleTable(st);
-                        homeA.setVisible(true);
-                        this.dispose();
-                    }
-                    else
-                    {
-                        scheduleTable_Staff homeS = new scheduleTable_Staff(st);
-                        homeS.setVisible(true);
-                        this.dispose();
-                    }
-                }
-                else
-                {
-                    jLabel4.setText("Login Failed! Password Missmatch!");
-                }
-            }
-            else
-            {
-                 jLabel4.setText("Login Failed! User not Founnd!");
-            }
-        } 
-        catch (SQLException ex) 
-        {
-            JOptionPane.showMessageDialog(null,"ERROR! : "+ex);
-        }*/
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**

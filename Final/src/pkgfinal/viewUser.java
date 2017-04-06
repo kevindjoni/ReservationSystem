@@ -5,56 +5,49 @@
  */
 package pkgfinal;
 
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.sql.Statement;
 import javax.swing.JOptionPane;
-import javax.swing.table.DefaultTableModel;
+import javax.swing.JTable;
 
 /**
  *
  * @author NB
  */
 public class viewUser extends javax.swing.JFrame {
-    private Statement st;
+//    private controlData cd;
     private Object[] obj = null;
-    public void fillTable(String query)
-    {
-        try 
-        {
-            ResultSet rs;
-            DefaultTableModel table = new DefaultTableModel();
-            rs = st.executeQuery(query);
-            ResultSetMetaData data = rs.getMetaData();
-            int num = data.getColumnCount();
-            for(int i = 0 ; i < num ; i++)
-            {
-                table.addColumn(data.getColumnLabel(i + 1));
-            }
-            while(rs.next())
-            {
-                obj = new Object[num];
-                for(int i = 0; i < num; i++)
-                {
-                    obj[i] = rs.getObject(i+1);
-                }
-                table.addRow(obj);
-            }
-            table1.setModel(table);
-        } 
-        catch (SQLException ex) 
-        {
-           JOptionPane.showMessageDialog(null, "Error: " + ex);
-        }
-    }
-    public viewUser(Statement st) 
+    private Control c;
+    private scheduleTable admin;
+    
+    public viewUser(){}
+    
+    public viewUser(scheduleTable admin)
     {
         initComponents();
-        this.st=st;
-        this.fillTable("SELECT * FROM `user`");
+        this.admin=admin;
+        c = new Control();
+        table1.setModel(c.fillTable(admin.isIsLogin(),"SELECT * FROM `user`")); //  fill table
+    }
+//    public viewUser(controlData cd) 
+//    {
+//        initComponents();
+//        this.cd = cd; // connection
+//        table1.setModel(cd.fillTable("SELECT * FROM `user`")); //  fill table
+//    }    
+
+//    public controlData getCd() {
+//        return cd;
+//    }    
+
+    public JTable getTable1() {
+        return table1;
     }
 
+    public scheduleTable getAdmin() {
+        return admin;
+    }
+
+    
     
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -172,44 +165,37 @@ public class viewUser extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        adduser add= new adduser(st,this);
+        // add button
+        adduser add= new adduser(this);
         add.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        scheduleTable st1 = new scheduleTable(st);
+        // back button
+        scheduleTable st1 = admin;
         st1.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        try
-        {
-            int id = (int)table1.getValueAt(table1.getSelectedRow(), 0);
-            st.executeUpdate("DELETE FROM `user` WHERE `ID` = '" + id + "'");
-            this.fillTable("SELECT * FROM `user`");
-        }
-        catch(SQLException ex)
-        {
-            JOptionPane.showMessageDialog(null, "ERROR! : " + ex);
-        }
-        catch(ArrayIndexOutOfBoundsException ex)
-        {
-            JOptionPane.showMessageDialog(null, "ERROR! : " + ex);
-        }
+        // delete button
+        int id = (int) table1.getValueAt(table1.getSelectedRow(), 0);
+        boolean success = c.tryDelete(admin.isIsLogin(), id);
+        table1.setModel(c.fillTable(admin.isIsLogin(),"SELECT * FROM `user`"));
+        
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        try
-        {
-        int id = (int)table1.getValueAt(table1.getSelectedRow(), 0);
-        edituser edit=new edituser(st,this,id);
+        // edit button
+        int row = table1.getSelectedRow();
+        int id = (int)table1.getValueAt(row, 0);
+        String u = table1.getValueAt(row, 1).toString();
+        String p = table1.getValueAt(row, 2).toString();
+//        edituser edit=new edituser(st,this,id);
+        edituser edit = new edituser(id,u,p);
         edit.setVisible(true);
-        }
-        catch(ArrayIndexOutOfBoundsException ex)
-        {
-            JOptionPane.showMessageDialog(null, "ERROR! : " + ex);
-        }
+        this.dispose();
     }//GEN-LAST:event_jButton4ActionPerformed
 
     /**

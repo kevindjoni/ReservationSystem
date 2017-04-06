@@ -1,21 +1,14 @@
 package pkgfinal;
 
-import static com.sun.org.apache.xalan.internal.lib.ExsltDatetime.time;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.Time;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JOptionPane;
 import javax.swing.Timer;
-import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -23,20 +16,21 @@ import javax.swing.table.DefaultTableModel;
  */
 public class scheduleTable_Staff extends javax.swing.JFrame 
 {
-    private Object[] obj = null;
-    private controlData cd= null;
+    private Control c= null;
     private String date;
+    private boolean isLogin = false;
     
-    public scheduleTable_Staff(){}
-    
-    public scheduleTable_Staff(Control c) 
+    public scheduleTable_Staff()
     {
         initComponents();
         table1.getTableHeader().setReorderingAllowed(false);
-        
+        isLogin = true;
         // initialize flight schedule
-        cd = new controlData();
-        table1.setModel(cd.fillSchedule());
+        c = new Control();
+        String command = "SELECT * FROM `flight`";
+        table1.setModel(c.fillTable(isLogin, command));
+        
+        
         showDate();
         showTime();
     }
@@ -62,6 +56,11 @@ public class scheduleTable_Staff extends javax.swing.JFrame
         });
         timer.start();
     }
+
+    public boolean isIsLogin() {
+        return isLogin;
+    }
+    
     
     /**
      * This method is called from within the constructor to initialize the form.
@@ -286,26 +285,28 @@ public class scheduleTable_Staff extends javax.swing.JFrame
     private void buyTicActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buyTicActionPerformed
         int row = table1.getSelectedRow();
         int flightid = (int) table1.getValueAt(row, 0);
-        String command = "SELECT * FROM `flight` WHERE `Flight ID` = '"+ flightid + "'";
 
-        buyTicket bt = new buyTicket(flightid);
+        buyTicket bt = new buyTicket(flightid, this);
         bt.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_buyTicActionPerformed
 
     private void viewTranActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewTranActionPerformed
-    transaction tran = new transaction();
+    transaction tran = new transaction(this);
     tran.setVisible(true);
     this.dispose();
     }//GEN-LAST:event_viewTranActionPerformed
 
     private void refreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshActionPerformed
-        cd.Refresh(date);
-        cd.fillTable("SELECT * FROM `flight`");
+        c.tryRefresh(isLogin, date);
+        table1.setModel(c.fillTable(isLogin, date));
+        
     }//GEN-LAST:event_refreshActionPerformed
 
     private void jTextField_SearchKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField_SearchKeyReleased
         // TODO add your handling code here:
-        cd.fillTable("SELECT * FROM `flight` WHERE `flight number` LIKE '%" + jTextField_Search.getText() + "%' OR `airline` LIKE '%" + jTextField_Search.getText() + "%'");
+        String com = "SELECT * FROM `flight` WHERE `flight number` LIKE '%" + jTextField_Search.getText() + "%' OR `airline` LIKE '%" + jTextField_Search.getText() + "%'";
+        table1.setModel(c.fillTable(isLogin, com));
     }//GEN-LAST:event_jTextField_SearchKeyReleased
 
     private void SearchDestinationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SearchDestinationActionPerformed
@@ -317,11 +318,13 @@ public class scheduleTable_Staff extends javax.swing.JFrame
     }//GEN-LAST:event_SearchOriginActionPerformed
 
     private void SearchOriginKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_SearchOriginKeyReleased
-        cd.fillTable("SELECT * FROM `flight` WHERE `destination` LIKE '%" + SearchDestination.getText() + "%' AND `origin` LIKE '%" + SearchOrigin.getText() + "%'");
+        String com = "SELECT * FROM `flight` WHERE `destination` LIKE '%" + SearchDestination.getText() + "%' AND `origin` LIKE '%" + SearchOrigin.getText() + "%'";
+        table1.setModel(c.fillTable(isLogin, com));
     }//GEN-LAST:event_SearchOriginKeyReleased
 
     private void SearchDestinationKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_SearchDestinationKeyReleased
-        cd.fillTable("SELECT * FROM `flight` WHERE `destination` LIKE '%" + SearchDestination.getText() + "%' AND `origin` LIKE '%" + SearchOrigin.getText() + "%'");
+        String com = "SELECT * FROM `flight` WHERE `destination` LIKE '%" + SearchDestination.getText() + "%' AND `origin` LIKE '%" + SearchOrigin.getText() + "%'";
+        table1.setModel(c.fillTable(isLogin, com));
     }//GEN-LAST:event_SearchDestinationKeyReleased
 
     private void logoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutActionPerformed

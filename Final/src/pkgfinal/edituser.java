@@ -17,39 +17,57 @@ import javax.swing.JOptionPane;
  * @author NB
  */
 public class edituser extends javax.swing.JFrame {
-    private Statement st;
-    private viewUser t;
+//    private Statement st;
+//    private viewUser t;
     private int target;
     private String user=null;
     private String pass=null;
+//    private controlData cd;
+    private ResultSet rs;
+    private Control c;
     
-    public edituser(Statement st, viewUser t, int target){
+    public edituser(){}
+    public edituser(int target, String u, String p)
+    {
         initComponents();
-        this.st=st;
-        this.t=t;
-        this.target=target;
-        ResultSet rs;
-        try 
+        c = new Control();
+        this.target = target;
+        user = u;
+        pass = p;
+        username.setText(user);
+        password.setText(pass);
+        if(c.isAdmin(user))
         {
-            rs = st.executeQuery("SELECT * FROM `user` WHERE `ID`='"+target+"'");
-            while(rs.next())
-            {
-                this.user=rs.getString("username");
-                this.pass=rs.getString("password");
-            }
-            username.setText(user);
-            password.setText(pass);
-            if(user.equals("admin"))
-            {
-                username.setEditable(false);
-            }
-        } 
-        catch (SQLException ex) 
-        {
-            JOptionPane.showMessageDialog(null, "ERROR! : " + ex);
+            username.setEditable(false);
         }
-
     }
+//    public edituser(Statement st, viewUser t, int target){
+//        initComponents();
+//        this.st=st;
+//        this.t=t;
+//        this.target=target;
+//        ResultSet rs;
+//        try 
+//        {
+//            rs = st.executeQuery("SELECT * FROM `user` WHERE `ID`='"+target+"'");
+//            while(rs.next())
+//            {
+//                this.user=rs.getString("username");
+//                this.pass=rs.getString("password");
+//            }
+//            username.setText(user);
+//            password.setText(pass);
+//            if(user.equals("admin"))
+//            {
+//                username.setEditable(false);
+//            }
+//        } 
+//        catch (SQLException ex) 
+//        {
+//            JOptionPane.showMessageDialog(null, "ERROR! : " + ex);
+//        }
+//
+//    }
 
    
     @SuppressWarnings("unchecked")
@@ -136,29 +154,20 @@ public class edituser extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        
-        try 
+        // edit button
+
+        boolean flag;
+        flag = c.validateUsername(user, pass);
+        if(!flag)
         {
-            if(!username.getText().equals("") && !password.getText().equals(""))
-            {
-                String temp=null;
-                ResultSet rs1= null;
-                rs1= st.executeQuery("SELECT * FROM `user` WHERE `username` = '"+user+"'");
-                if(rs1==null)
-                {
-                    error.setText("Username is already in use");
-                }
-                else
-                {
-                    st.executeUpdate("UPDATE `user` SET `username`='"+username.getText()+"', `password`='"+password.getText()+"' WHERE `ID`='"+target+"'");
-                    this.dispose();
-                    t.fillTable("SELECT * FROM `user`");
-                }
-            } 
+            error.setText("ERROR");
         }
-        catch (SQLException ex) 
+        else
         {
-            JOptionPane.showMessageDialog(null, "ERROR! : " + ex);
+            c.tryUpdateUser(user,pass,target);
+            viewUser v = new viewUser();
+            v.setVisible(true);
+            this.dispose();
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
