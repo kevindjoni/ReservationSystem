@@ -18,7 +18,7 @@ import javax.swing.JOptionPane;
  */
 public class edituser extends javax.swing.JFrame {
 //    private Statement st;
-//    private viewUser t;
+    private viewUser v;
     private int target;
     private String user=null;
     private String pass=null;
@@ -27,11 +27,12 @@ public class edituser extends javax.swing.JFrame {
     private Control c;
     
     public edituser(){}
-    public edituser(int target, String u, String p)
+    public edituser(int target, String u, String p, viewUser v)
     {
         initComponents();
         c = new Control();
         this.target = target;
+        this.v=v;
         user = u;
         pass = p;
         username.setText(user);
@@ -103,6 +104,11 @@ public class edituser extends javax.swing.JFrame {
         error.setForeground(new java.awt.Color(255, 51, 51));
 
         jButton2.setText("Cancel");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -155,21 +161,29 @@ public class edituser extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // edit button
-
+        String username1=username.getText().toString();
+        String password1=password.getText().toString();
         boolean flag;
-        flag = c.validateUsername(user, pass);
+        flag = c.editUsername(user, pass, target);
         if(!flag)
         {
             error.setText("ERROR");
         }
         else
         {
-            c.tryUpdateUser(user,pass,target);
-            viewUser v = new viewUser();
-            v.setVisible(true);
+            c.tryUpdateUser(username1,password1,target);
+            v.getTable1().setModel(c.fillTable(v.getAdmin().isIsLogin(),"SELECT * FROM `user`"));
+            v.setVisible(true); 
             this.dispose();
         }
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+        v.getTable1().setModel(c.fillTable(v.getAdmin().isIsLogin(),"SELECT * FROM `user`"));
+        v.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_jButton2ActionPerformed
 
  
 

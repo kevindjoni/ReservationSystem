@@ -45,6 +45,23 @@ public class model
         }
         return false;
     }
+    public boolean isUsernameExistEdit(String user, int target)
+    {
+        ResultSet rs;
+        try {
+            String temp;
+            rs = c.executeQuery("SELECT * FROM `user` WHERE `ID`!='"+target+"'");
+            while (rs.next()) {
+                temp = rs.getString("username");
+                if (temp.equals(user)) {
+                    return true;
+                }
+            }
+        } catch (SQLException ex) {
+            System.out.println("errror query");
+        }
+        return false;
+    }
     // checking the existence of input user and pass in the database
     public boolean loginSuccess(String username, String password)
     {
@@ -304,9 +321,12 @@ public class model
     }
     public void updateUser(String u, String p, int target)
     {
-        try {
-            c.getSt().executeUpdate("UPDATE `user` SET `username`='" + u + "', `password`='" + p + "' WHERE `ID`='" + target + "'");
-        } catch (SQLException ex) {
+        try 
+        {
+            c.getSt().executeUpdate("UPDATE `user` SET `Username`='"+u+"', `Password`='"+p+"' WHERE `ID`='"+target+"'");
+            System.out.println(target);
+        } 
+        catch (SQLException ex) {
             Logger.getLogger(edituser.class.getName()).log(Level.SEVERE, null, ex);
         }
     }

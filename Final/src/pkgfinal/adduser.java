@@ -18,19 +18,14 @@ import javax.swing.JOptionPane;
  */
 public class adduser extends javax.swing.JFrame {
 //    private Statement st;
-//    private viewUser t;
+    private viewUser v;
     private Control c;
-    private viewUser view;
-    public adduser()
-    {
-        initComponents();
-        c = new Control();
-    }
+   
     public adduser(viewUser v)
     {
         initComponents();
         c = new Control();
-        view = v;
+        this.v=v;
     }
     
 //    public adduser(Statement st,viewUser t)
@@ -140,14 +135,10 @@ public class adduser extends javax.swing.JFrame {
         }
         else
         {
-            viewUser v = view;
-            v.getTable1().setModel(c.fillTable(v.getAdmin().isIsLogin(), "SELECT * FROM `user`"));
+            v.getTable1().setModel(c.fillTable(v.getAdmin().isIsLogin(),"SELECT * FROM `user`"));
             v.setVisible(true);
             this.dispose();
         }
-        
-        
-        
     }//GEN-LAST:event_addActionPerformed
 
     private void cancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelActionPerformed

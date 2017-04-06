@@ -18,6 +18,8 @@ import javax.swing.Timer;
  */
 public class scheduleTable extends javax.swing.JFrame 
 {
+    private Object[] obj = null;
+//    private controlData cd= null;
     private String date;
     private boolean isLogin = false;
     private Control c;
@@ -38,6 +40,23 @@ public class scheduleTable extends javax.swing.JFrame
         
         
     }
+//    public scheduleTable(controlData cd)
+//    {
+//        initComponents();
+//        showDate();
+//        showTime();
+//        this.cd = cd;
+//        cd.Refresh(date);
+//        table1.getTableHeader().setReorderingAllowed(false);
+//        ResultSet rs;
+//        try {
+//            rs = cd.getC().getSt().executeQuery("SELECT * FROM `flight`");
+//            table1.setModel(cd.fillSchedule(rs));
+//        } catch (SQLException ex) {
+//            Logger.getLogger(scheduleTable.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        
+//    }
     
     void showDate()
     {

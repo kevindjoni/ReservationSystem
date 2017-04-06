@@ -36,10 +36,7 @@ public class Control
             // try to check the existence of username and password 
             // in the database
             message = m.loginSuccess(u,p);
-        }
-        
-        
-        
+        } 
         return message;
     }     
     
@@ -109,7 +106,15 @@ public class Control
         }
         return success;
     }
-    
+    public boolean editUsername(String user, String pass, int target)
+    {
+        boolean success = false;
+        if(!user.equals("") && !pass.equals(""))
+        {
+            success = !m.isUsernameExistEdit(user,target);
+        }
+        return success;
+    }
     private int showRandomInteger(int aStart, int aEnd, Random aRandom) 
     {
         int randomNumber = 0;

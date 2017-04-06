@@ -16,6 +16,7 @@ import javax.swing.Timer;
  */
 public class scheduleTable_Staff extends javax.swing.JFrame 
 {
+    private Object[] obj = null;
     private Control c= null;
     private String date;
     private boolean isLogin = false;

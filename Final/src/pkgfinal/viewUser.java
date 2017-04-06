@@ -19,7 +19,12 @@ public class viewUser extends javax.swing.JFrame {
     private Control c;
     private scheduleTable admin;
     
-    public viewUser(){}
+    public viewUser()
+    {
+        initComponents();
+        c = new Control();
+        table1.setModel(c.fillTable(true,"SELECT * FROM `user`")); //  fill table
+    }
     
     public viewUser(scheduleTable admin)
     {
@@ -42,13 +47,10 @@ public class viewUser extends javax.swing.JFrame {
     public JTable getTable1() {
         return table1;
     }
-
-    public scheduleTable getAdmin() {
+    public scheduleTable getAdmin()
+    {
         return admin;
     }
-
-    
-    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -168,7 +170,7 @@ public class viewUser extends javax.swing.JFrame {
         // add button
         adduser add= new adduser(this);
         add.setVisible(true);
-        this.dispose();
+        this.setVisible(false);
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
@@ -180,22 +182,35 @@ public class viewUser extends javax.swing.JFrame {
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         // delete button
-        int id = (int) table1.getValueAt(table1.getSelectedRow(), 0);
-        boolean success = c.tryDelete(admin.isIsLogin(), id);
-        table1.setModel(c.fillTable(admin.isIsLogin(),"SELECT * FROM `user`"));
-        
+        try
+        {
+            int id = (int) table1.getValueAt(table1.getSelectedRow(), 0);
+            boolean success = c.tryDelete(admin.isIsLogin(), id);
+            table1.setModel(c.fillTable(admin.isIsLogin(),"SELECT * FROM `user`"));
+        }
+        catch(ArrayIndexOutOfBoundsException ex)
+        {
+            
+        }
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         // edit button
+        try
+        {
         int row = table1.getSelectedRow();
         int id = (int)table1.getValueAt(row, 0);
         String u = table1.getValueAt(row, 1).toString();
         String p = table1.getValueAt(row, 2).toString();
 //        edituser edit=new edituser(st,this,id);
-        edituser edit = new edituser(id,u,p);
+        edituser edit = new edituser(id,u,p,this);
         edit.setVisible(true);
         this.dispose();
+        }
+        catch(ArrayIndexOutOfBoundsException ex)
+        {
+            
+        }
     }//GEN-LAST:event_jButton4ActionPerformed
 
     /**
