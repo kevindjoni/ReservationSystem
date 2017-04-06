@@ -5,16 +5,10 @@
  */
 package pkgfinal;
 
-import com.mysql.jdbc.StringUtils;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.JOptionPane;
 
 /**
  *
@@ -23,222 +17,146 @@ import javax.swing.JOptionPane;
 public class editTable_Admin extends javax.swing.JFrame {
 
     private int eRow;           //  edited row
-    private String flightnum;
-    private String airline;
-    private String etd;
-    private String eta;
-    private int seats;
-    private String des;
-    private String ori;
-    private String cmonth;
-    private String cyear;
-    private String cday;
+//    private String flightnum;
+//    private String airline;
+//    private String etd;
+//    private String eta;
+//    private int seats;
+//    private String des;
+//    private String ori;
+//    private String cmonth;
+//    private String cyear;
+//    private String cday;
     private int price;
     private int curry;
     private int currm;
     private int currd;
-    private String updatey;
-    private String updatem;
-    private String updated;
-    private Statement st;
-    private scheduleTable t;
+//    private String updatey;
+//    private String updatem;
+//    private String updated;
+//    private Statement st;
+//    private scheduleTable t;
     private DefaultComboBoxModel mdl;
+//    private controlData cd = null;
+//    private ArrayList<String> info;
+    private String date1;
+    private addTable_Admin add;
+    private Control c;
+    private scheduleTable admin;
+    
     /**
      * Creates new form editTable_Admin
      */
-    public editTable_Admin() {
-        initComponents();
-    }
-    public editTable_Admin(ArrayList<String> a, controlData cd)
+    public editTable_Admin() 
     {
-        addTable_Admin table = new addTable_Admin();
+        initComponents();
+//        cd = new controlData();
+    }
+    public editTable_Admin(ArrayList<String> a, scheduleTable admin, int no)
+    {
+//      info = a;
+        initComponents();
+        eRow = no;
+//        cd = c;
+        c = new Control();
         mdl=new DefaultComboBoxModel();
-        Airline.setModel(cd.fillComboBox(table.getAirline()));
-        h1.setModel(cd.fillComboBox(table.getHours()));
-        h2.setModel(cd.fillComboBox(table.getHours()));
-        m1.setModel(cd.fillComboBox(table.getMinutes()));
-        m2.setModel(cd.fillComboBox(table.getMinutes()));
-        Airline.setSelectedItem(a.get(0));
+        this.admin = admin;
+        add = new addTable_Admin();
+        Airline1.setModel(c.fillComboBox(add.getAirline()));
+        h1.setModel(c.fillComboBox(add.getHours()));
+        h2.setModel(c.fillComboBox(add.getHours()));
+        m1.setModel(c.fillComboBox(add.getMinutes()));
+        m2.setModel(c.fillComboBox(add.getMinutes()));
+        setDateBox();
+        Airline1.setSelectedItem(a.get(0));
         h1.setSelectedItem(a.get(3).substring(0,2));
         m1.setSelectedItem(a.get(3).substring(3,5));
         h2.setSelectedItem(a.get(4).substring(0,2));
         m2.setSelectedItem(a.get(4).substring(3,5));
-        seatnum.setValue(a.get(5));
+        seatnum.setValue(Integer.parseInt(a.get(5)));
         destination.setText(a.get(6));
         origin.setText(a.get(7));
         year.setSelectedItem(a.get(8).substring(0,4));
         month.setSelectedItem(a.get(8).substring(5,7));
         date.setSelectedItem(a.get(8).substring(8,10));
-        cd.Refresh(a.get(8));
-        priceUpdate.setValue(a.get(9));
+        c.tryRefresh(admin.isIsLogin(),a.get(8));
+        priceUpdate.setValue(Integer.parseInt(a.get(9)));
     }
     
-    
-//    public void Refresh()
-//    {
-//        DefaultComboBoxModel y=new DefaultComboBoxModel();
-//        DefaultComboBoxModel b=new DefaultComboBoxModel();
-//        DefaultComboBoxModel d=new DefaultComboBoxModel();
-//        String[] year1 = {
-//                            "2017","2018","2019","2020","2021","2022","2023","2024","2025","2026","2027"
-//                         };
-//        String[] month1 = {
-//                            "01","02","03","04","05","06","07","08","09","10",
-//                            "11","12"
-//                         };
-//        for(int i=0;i<year1.length;i++)
-//        {
-//            y.addElement(year1[i]);
-//        }
-//        for(int i=0;i<month1.length;i++)
-//        {
-//            b.addElement(month1[i]);
-//        }
-//        year.setModel(y);
-//        month.setModel(b);
-//        if(cmonth!=null)
-//        {
-//            month.setSelectedItem(cmonth);
-//        }
-//        if(cyear!=null)
-//        {
-//            year.setSelectedItem(cyear);
-//        }
-//        String[] day1=null;
-//        if(month.getSelectedItem().equals("02")&&(year.getSelectedItem().equals("2017")||year.getSelectedItem().equals("2018")||
-//                year.getSelectedItem().equals("2019")||year.getSelectedItem().equals("2021")||year.getSelectedItem().equals("2022")||
-//                year.getSelectedItem().equals("2023")||year.getSelectedItem().equals("2025")||year.getSelectedItem().equals("2026")||
-//                year.getSelectedItem().equals("2027")))
-//        {
-//            String[] day = {
-//                            "01","02","03","04","05","06","07","08","09","10",
-//                            "11","12","13","14","15","16","17","18","19","20",
-//                            "21","22","23","24", "25","26","27","28"
-//                        };
-//            day1=day;
-//        }
-//        else  if((((String) year.getSelectedItem()).equals("2020") || ((String)year.getSelectedItem()).equals("2024"))&& ((String)month.getSelectedItem()).equals("02"))
-//        {
-//            String[] day = {
-//                            "01","02","03","04","05","06","07","08","09","10",
-//                            "11","12","13","14","15","16","17","18","19","20",
-//                            "21","22","23","24", "25","26","27","28","29"
-//                        };
-//            day1=day;
-//        }
-//        else if(month.getSelectedItem().equals("01")||month.getSelectedItem().equals("03")||
-//                month.getSelectedItem().equals("05")||month.getSelectedItem().equals("07")||
-//                month.getSelectedItem().equals("08")||month.getSelectedItem().equals("10")||
-//                month.getSelectedItem().equals("12"))
-//        {
-//            String[] day = {
-//                            "01","02","03","04","05","06","07","08","09","10",
-//                            "11","12","13","14","15","16","17","18","19","20",
-//                            "21","22","23","24", "25","26","27","28","29","30","31"
-//                        };
-//            day1=day;
-//        }
-//        else
-//        {
-//            String[] day = {
-//                            "01","02","03","04","05","06","07","08","09","10",
-//                            "11","12","13","14","15","16","17","18","19","20",
-//                            "21","22","23","24", "25","26","27","28","29","30"
-//                        };
-//            day1=day;
-//        }
-//        for(int i=0;i<day1.length;i++)
-//        {
-//            d.addElement(day1[i]);
-//        }
-//        date.setModel(d);
-//        if(cday!=null)
-//        {
-//            date.setSelectedItem(cday);
-//        }
-//    }
+     public void setDateBox() 
+    {
+        int min = 2017;
+        int max = 2027;
+        mdl = new DefaultComboBoxModel();
+        for (int z = min; z <= max; z++) {
+            mdl.addElement(z);
+            //jd.addItem(z);
+        }
+        year.setModel(mdl);
+        int months[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
+        mdl = new DefaultComboBoxModel();
+        for (int l = 0; l < months.length; l++) {
+            mdl.addElement(months[l]);
+        }
+        month.setModel(mdl);
+        int day[] = {31, 30, 28, 29};
+        mdl = new DefaultComboBoxModel();
+        for (int i = 1; i <= 31; i++) {
+            mdl.addElement(i);
+        }
+        date.setModel(mdl);
+        year.addActionListener(new ActionListener() {
+            int index;
 
-//    public editTable_Admin(int temp,String flightnum,String airline,String etd,
-//            String eta,int seats,String des,String ori,Statement st,scheduleTable t, 
-//            int curry,int currm, int currd, int price, String updatey, String updatem, String updated) 
-//    {
-//        initComponents();
-//        eRow = temp;
-//        destination.setEditable(false);
-//        origin.setEditable(false);
-//        this.flightnum=flightnum;
-//        this.airline=airline;
-//        this.etd=etd;
-//        this.eta=eta;
-//        this.seats=seats;
-//        this.des=des;
-//        this.ori=ori;
-//        this.st=st;
-//        this.t=t;
-//        this.price=price;
-//        this.curry=curry;
-//        this.currm=currm;
-//        this.currd=currd;
-//        this.updatey=updatey;
-//        this.updatem=updatem;
-//        this.updated=updated;
-//        DefaultComboBoxModel mdl=new DefaultComboBoxModel();
-//        String[] airlines = {"Garuda Indonesia" , "Lufthansa" , "China Airlines" , "Singapore Airlines", "Emirates", "Etihad", "Air Asia", "Cathay Pacific", "Lion Air", "Japan Airlines", "All Nippon Airlines"};
-//        for(int j = 0; j < airlines.length; j++)
-//        {
-//            mdl.addElement(airlines[j]);
-//        }
-//        Airline.setModel(mdl);
-//        DefaultComboBoxModel h=new DefaultComboBoxModel();
-//        DefaultComboBoxModel m=new DefaultComboBoxModel();
-//        DefaultComboBoxModel h3=new DefaultComboBoxModel();
-//        DefaultComboBoxModel m3=new DefaultComboBoxModel();
-//        String[] hours = {
-//                            "00", "01","02","03","04","05","06","07","08","09","10",
-//                            "11","12","13","14","15","16","17","18","19","20",
-//                            "21","22","23"
-//                         };
-//        String[] minutes = {
-//                            "00", "01","02","03","04","05","06","07","08","09","10",
-//                            "11","12","13","14","15","16","17","18","19","20",
-//                            "21","22","23","24", "25","26","27","28","29","30",
-//                            "31","32","33","34","35","36","37","38","39","40",
-//                            "41","42","43","44","45","46","47","48","49","50",
-//                            "51","52","53","54","55","56","57","58","59"
-//        };
-//        for(int i=0;i<hours.length;i++)
-//        {
-//            h.addElement(hours[i]);
-//            h3.addElement(hours[i]);
-//        }
-//        for(int i=0;i<minutes.length;i++)
-//        {
-//            m.addElement(minutes[i]);
-//            m3.addElement(minutes[i]);
-//        }
-//        h1.setModel(h);
-//        h2.setModel(h3);
-//        m1.setModel(m);
-//        m2.setModel(m3);
-//        flightNum.setText(flightnum);
-//        Airline.setSelectedItem(airline);
-//        String hour=etd.substring(0,2);
-//        String minute=etd.substring(3,5);
-//        String hour1=eta.substring(0,2);
-//        String minute1=eta.substring(3,5);
-//        h1.setSelectedItem(hour);
-//        m1.setSelectedItem(minute);
-//        h2.setSelectedItem(hour1);
-//        m2.setSelectedItem(minute1);
-//        seatnum.setValue(seats);
-//        destination.setText(des);
-//        origin.setText(ori);
-//        cyear=updatey;
-//        cmonth=updatem;
-//        cday=updated;
-//        this.Refresh();
-//        priceUpdate.setValue(price);
-//    }
+            public void actionPerformed(ActionEvent ae) {
+                Object item = year.getSelectedItem();
+                year.setSelectedItem(item);
+            }
+        });
+        month.addActionListener(new ActionListener() {
+            DefaultComboBoxModel mdl2 = new DefaultComboBoxModel();
+            int value = 1;
+
+            public void actionPerformed(ActionEvent e) {
+                int k = month.getSelectedIndex();
+                if (k < 7) {
+                    if (k == 1) {
+                        boolean message = add.checkLeapYear(year.getSelectedItem());
+                        if (message) {
+                            value = day[3];
+                        } else {
+                            value = day[2];
+                        }
+
+                    } else if (k % 2 == 1) {
+                        value = day[1];
+                    } else if (k % 2 == 0) {
+                        value = day[0];
+                    }
+                } else {
+                    if (k % 2 == 1) {
+                        value = day[0];
+                    } else if (k % 2 == 0) {
+                        value = day[1];
+                    }
+                }
+
+                for (int z = 1; z <= value; z++) {
+                    mdl2.addElement(z);
+                }
+                date.setModel(mdl2);
+            }
+        });
+        date.addActionListener(new ActionListener() {
+            int index;
+
+            public void actionPerformed(ActionEvent ae) {
+                Object item = date.getSelectedItem();
+                date.setSelectedItem(item);
+            }
+        });
+    }
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -254,7 +172,6 @@ public class editTable_Admin extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
-        Airline = new javax.swing.JComboBox<>();
         flightNum = new javax.swing.JTextField();
         jButton1_editSubmission = new javax.swing.JButton();
         exit = new javax.swing.JButton();
@@ -279,6 +196,7 @@ public class editTable_Admin extends javax.swing.JFrame {
         jLabel14 = new javax.swing.JLabel();
         priceUpdate = new javax.swing.JSpinner();
         error1 = new javax.swing.JLabel();
+        Airline1 = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -362,6 +280,12 @@ public class editTable_Admin extends javax.swing.JFrame {
 
         error1.setForeground(new java.awt.Color(255, 0, 0));
 
+        Airline1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Airline1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -393,38 +317,35 @@ public class editTable_Admin extends javax.swing.JFrame {
                             .addComponent(destination)
                             .addComponent(seatnum)
                             .addComponent(priceUpdate)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                            .addGroup(layout.createSequentialGroup()
-                                                .addComponent(h1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(jLabel7)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(m1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                            .addGroup(layout.createSequentialGroup()
-                                                .addComponent(h2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 4, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(m2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                        .addGap(58, 58, 58)
-                                        .addComponent(jLabel11)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(year, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(jLabel12)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(month, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(jLabel13)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(date, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                        .addComponent(flightNum)
-                                        .addComponent(Airline, javax.swing.GroupLayout.PREFERRED_SIZE, 612, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                .addGap(0, 0, Short.MAX_VALUE))))
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                        .addGroup(layout.createSequentialGroup()
+                                            .addComponent(h1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                            .addComponent(jLabel7)
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                            .addComponent(m1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGroup(layout.createSequentialGroup()
+                                            .addComponent(h2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                            .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 4, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                            .addComponent(m2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addGap(58, 58, 58)
+                                    .addComponent(jLabel11)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(year, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(jLabel12)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(month, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(jLabel13)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(date, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(flightNum, javax.swing.GroupLayout.PREFERRED_SIZE, 612, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(Airline1, 0, 618, Short.MAX_VALUE)))
                     .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 718, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -434,9 +355,9 @@ public class editTable_Admin extends javax.swing.JFrame {
                 .addGap(6, 6, 6)
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(Airline, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(Airline1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -466,7 +387,7 @@ public class editTable_Admin extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(h2)
                             .addComponent(m2)
-                            .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                            .addComponent(jLabel6))))
                 .addGap(0, 0, 0)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -496,56 +417,34 @@ public class editTable_Admin extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1_editSubmissionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1_editSubmissionActionPerformed
-        String airlineName = Airline.getSelectedItem().toString();
+        String airlineName = Airline1.getSelectedItem().toString();
         String etd = h1.getSelectedItem().toString()+":" + m1.getSelectedItem().toString();
         String eta = h2.getSelectedItem().toString()+":" + m2.getSelectedItem().toString();
         String des = destination.getText().toString();
         String ori = origin.getText().toString();
-        int seat = (int) seatnum.getValue();
-        int price1=(int)priceUpdate.getValue();
+        String seat = (String) seatnum.getValue();
+        String price1 = (String) priceUpdate.getValue();
         String num = flightNum.getText().toString();
-        try {
-            boolean count=false;
-            if(airlineName!=null && eta.length()==5 && etd.length()==5 && des!=null && ori!=null && seat>0 && num!=null && price1>0)
-            {
-                if(curry<Integer.parseInt(year.getSelectedItem().toString()))
-                {
-                    count=true;
-                }
-                else if(curry==Integer.parseInt(year.getSelectedItem().toString()))
-                {
-                    if(currm<Integer.parseInt(month.getSelectedItem().toString()))
-                    {
-                        count=true;
-                    }
-                    else if(currm==Integer.parseInt(month.getSelectedItem().toString()))
-                    {
-                        if(currd<Integer.parseInt(date.getSelectedItem().toString()))
-                        {
-                            count=true;
-                        }
-                    }
-                }
-                if(count==true)
-                {
-                   st.executeUpdate("UPDATE `flight` SET `flight number`='"+num+"', `airline`='"+airlineName+"', "
-                           + "`eta`='"+eta+"', `etd`='"+etd+"', `destination`='"+des+"',`origin`='"+ori+"', `seats left`='"+seat+"' "
-                                   + "WHERE `Flight ID`='"+eRow+"'");
-                this.dispose();
-                t.fillTable("SELECT * FROM `flight`");
-                }
-                else
-                {
-                    error1.setText("You cannot add a flight after on the same day. Please recheck the date!");
-                }
-            }
-            else
-            {
-                error1.setText("Invalid data input! Please check again. Some fields may be left empty");
-            }
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(null,"ERROR! : "+ex);
+        date1 = year.getSelectedItem().toString() + "-" 
+                + month.getSelectedItem().toString() + "-" 
+                + date.getSelectedItem().toString();
+        
+        boolean count;
+        int[] dateToday = {curry,currm,currd};
+        String[] items = {airlineName, eta,etd,des,ori,seat,num,price1};
+        
+        count  = c.validateInput(dateToday,items);
+        
+         
+        if (count) {
+            c.tryUpdateFlight(items, eRow );
+            this.dispose();
+            scheduleTable s = admin;
+            s.setVisible(true);
+        } else {
+            error1.setText("You cannot add a flight after on the same day. Please recheck the date!");
         }
+        
     }//GEN-LAST:event_jButton1_editSubmissionActionPerformed
 
     private void destinationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_destinationActionPerformed
@@ -564,8 +463,8 @@ public class editTable_Admin extends javax.swing.JFrame {
 
     private void yearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_yearActionPerformed
         // TODO add your handling code here:
-        cyear=year.getSelectedItem().toString();
-        this.Refresh();
+//        cyear=year.getSelectedItem().toString();
+//        cd.Refresh(info.get(9));
     }//GEN-LAST:event_yearActionPerformed
 
     private void monthMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_monthMousePressed
@@ -578,8 +477,8 @@ public class editTable_Admin extends javax.swing.JFrame {
     }//GEN-LAST:event_monthMouseReleased
 
     private void monthActionPerformned(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_monthActionPerformned
-        cmonth=month.getSelectedItem().toString();
-        this.Refresh();
+//        cmonth=month.getSelectedItem().toString();
+//        cd.Refresh(info.get(9));
     }//GEN-LAST:event_monthActionPerformned
 
     private void exitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitActionPerformed
@@ -587,9 +486,14 @@ public class editTable_Admin extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_exitActionPerformed
 
+    private void Airline1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Airline1ActionPerformed
+        // TODO add your handling code here:
+
+    }//GEN-LAST:event_Airline1ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JComboBox<String> Airline;
+    private javax.swing.JComboBox<String> Airline1;
     private javax.swing.JComboBox<String> date;
     private javax.swing.JTextField destination;
     private javax.swing.JLabel error1;

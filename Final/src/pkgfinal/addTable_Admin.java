@@ -15,20 +15,23 @@ import javax.swing.JOptionPane;
  */
 public class addTable_Admin extends javax.swing.JFrame 
 {
-    private Statement st;
-    private scheduleTable t;
+//    private Statement st;
+//    private scheduleTable t;
     private String dateNow;
-    private controlData cd;
+    private boolean isLogin = false;
+    private scheduleTable admin;
+//    private controlData cd;
+    private Control c;
     private DefaultComboBoxModel mdl;
-    final private String[] airline = {"Garuda Indonesia" , "Lufthansa" , "China Airlines" ,
+    private String[] airline = {"Garuda Indonesia" , "Lufthansa" , "China Airlines" ,
             "Singapore Airlines", "Emirates", "Etihad", "Air Asia", "Cathay Pacific",
             "Lion Air", "Japan Airlines", "All Nippon Airlines"};
-    final private String[] hours = {
+    private String[] hours = {
                             "00", "01","02","03","04","05","06","07","08","09","10",
                             "11","12","13","14","15","16","17","18","19","20",
                             "21","22","23"
                          };
-    final private String[] minutes = {
+    private String[] minutes =  {
                             "00", "01","02","03","04","05","06","07","08","09","10",
                             "11","12","13","14","15","16","17","18","19","20",
                             "21","22","23","24", "25","26","27","28","29","30",
@@ -37,22 +40,27 @@ public class addTable_Admin extends javax.swing.JFrame
                             "51","52","53","54","55","56","57","58","59"
         };
     
-    public addTable_Admin(){}
-    public addTable_Admin(controlData cd, String d)
+    public addTable_Admin()
     {
         initComponents();
-        this.cd = cd;
+    }
+    public addTable_Admin(String d, scheduleTable admin)
+    {
+        initComponents();
+        c =  new Control();
+        this.admin = admin;
         dateNow = d;
-        Airline.setModel(cd.fillComboBox(airline));
-        h1.setModel(cd.fillComboBox(hours));
-        h2.setModel(cd.fillComboBox(hours));
-        m1.setModel(cd.fillComboBox(minutes));
-        m2.setModel(cd.fillComboBox(minutes));
+        isLogin = true;
+        Airline.setModel(c.fillComboBox(airline));
+        h1.setModel(c.fillComboBox(hours));
+        h2.setModel(c.fillComboBox(hours));
+        m1.setModel(c.fillComboBox(minutes));
+        m2.setModel(c.fillComboBox(minutes));
         this.setDateBox();
-        cd.Refresh(dateNow);
+        c.tryRefresh(admin.isIsLogin(),dateNow);
     }
     
-    private boolean checkLeapYear(Object year)
+    public boolean checkLeapYear(Object year)
     {
         boolean message;
         int y = (int) year;
@@ -465,33 +473,23 @@ public class addTable_Admin extends javax.swing.JFrame
         String etd = h2.getSelectedItem().toString() + ":" + m2.getSelectedItem().toString();
         String des = destination.getText().toString();
         String ori = origin.getText().toString();
-        String seat = (String) seatnum.getValue();
+        String seat = seatnum.getValue().toString();
         String num = flightNum.getText().toString();
-        String price1 = (String) price.getValue();
+        String price1 = price.getValue().toString();
         String dateflight = year.getSelectedItem().toString() + "-" + month.getSelectedItem().toString() + "-" + date.getSelectedItem().toString();
         
         boolean count;
         int[] dateToday = {curry,currm,currd};
         String[] items = {airlineName, eta,etd,des,ori,seat,num,price1,dateflight};
         
-        count  = cd.validateInput(dateToday,items);
+        count  = c.validateInput(dateToday,items);
         
-        if (count) 
+        if(count)
         {
-            try {
-                cd.getC().getSt().executeUpdate("INSERT INTO `flight` (`Flight ID`, `flight number`, `airline`, `etd`, `eta`, `seats left`, "
-                        + "`destination`, `origin`,`date`,`price`) VALUES "
-                        + "(NULL, '" + num + "', '" + airlineName + "', '" + eta + "', '" + etd + "', '" + seat + "', '" + des + "', "
-                                + "'" + ori + "','" + dateflight + "','" + price1 + "');");
-            } catch (SQLException ex) {
-                Logger.getLogger(addTable_Admin.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            c.tryAddFlight(items);
+            scheduleTable st = admin;
+            st.setVisible(true);
             this.dispose();
-            cd.fillTable("SELECT * FROM `flight`");
-            scheduleTable s = new scheduleTable(cd);
-            s.setVisible(true);
-        } else {
-            error.setText("All field must be filled / Value is invalid");
         }
             
     }//GEN-LAST:event_add_AddActionPerformed

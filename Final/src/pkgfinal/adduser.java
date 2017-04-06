@@ -17,15 +17,28 @@ import javax.swing.JOptionPane;
  * @author NB
  */
 public class adduser extends javax.swing.JFrame {
-    private Statement st;
-    private viewUser t;
-   
-    public adduser(Statement st,viewUser t)
+//    private Statement st;
+//    private viewUser t;
+    private Control c;
+    private viewUser view;
+    public adduser()
     {
         initComponents();
-        this.st=st;
-        this.t=t;
+        c = new Control();
     }
+    public adduser(viewUser v)
+    {
+        initComponents();
+        c = new Control();
+        view = v;
+    }
+    
+//    public adduser(Statement st,viewUser t)
+//    {
+//        initComponents();
+//        this.st=st;
+//        this.t=t;
+//    }
     
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -116,44 +129,25 @@ public class adduser extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void addActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addActionPerformed
-        String user=username.getText().toString();
-        String pass = password.getText().toString();
-        if(!user.equals("") && !pass.equals(""))
+        String user=username.getText();
+        String pass = password.getText();
+        
+        boolean success = c.tryAddUser(user, pass);
+        
+        if(!success)
         {
-            String temp=null;
-            ResultSet rs= null;
-            try 
-            {
-                boolean found=false;
-                rs= st.executeQuery("SELECT * FROM `user`");
-                while (rs.next())
-                {
-                    temp=rs.getString("username");
-                    if(temp.equals(user))
-                    {
-                        found=true;
-                    }
-                }
-                if(found==true)
-                {
-                    error.setText("Username is already in use");
-                }
-                else
-                {
-                    st.executeUpdate("INSERT INTO `user` (`username`,`password`) VALUES ('"+user+"','"+pass+"')");
-                    this.dispose();
-                    t.fillTable("SELECT * FROM `user`");
-                }
-            } 
-            catch (SQLException ex) 
-            {
-                JOptionPane.showMessageDialog(null, "Error: " + ex);
-            }
+            error.setText("Username exist or Field is empty. Try again!");
         }
         else
         {
-            error.setText("Some fields are still empty!");
+            viewUser v = view;
+            v.getTable1().setModel(c.fillTable(v.getAdmin().isIsLogin(), "SELECT * FROM `user`"));
+            v.setVisible(true);
+            this.dispose();
         }
+        
+        
+        
     }//GEN-LAST:event_addActionPerformed
 
     private void cancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelActionPerformed

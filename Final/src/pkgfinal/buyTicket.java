@@ -5,19 +5,11 @@
  */
 package pkgfinal;
 
-import com.mysql.jdbc.StringUtils;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.text.ParseException;
-import java.util.Arrays;
-import java.util.List;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JOptionPane;
-import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
@@ -30,53 +22,38 @@ import javax.swing.event.ChangeListener;
  */
 public class buyTicket extends javax.swing.JFrame {
 
-    private int eRow;           //  edited row
     private int flightid;
-    private String airline;
-    private String etd;
-    private String eta;
-    private int seats;
-    private String des;
-    private String ori;
-    private String cmonth;
-    private String cyear;
-    private String cday;
-    private int price;
-    private int curry;
-    private int currm;
-    private int currd;
-    private String updatey;
-    private String updatem;
-    private String updated;
-    private scheduleTable_Staff sts;
-    private String[] value;
+    private ArrayList<String> value;
+    private Control c;
+    private scheduleTable_Staff staff;
 
     public buyTicket() {
         initComponents();
     }
 
-    public buyTicket(int flightid) {
+    public buyTicket(int id, scheduleTable_Staff s) 
+    {
         initComponents();
-        this.flightid = flightid;
-        FlightInfo fi = new FlightInfo();
-        fi.setID(String.valueOf(flightid));
-        JTextField[] text = {Airline, flightNum, etdText, etaText,
+        c = new Control();
+        flightid = id;
+        staff = s;
+        JTextField[] text = {flightNum, Airline, etdText, etaText,
              destination, origin, yearText, monthText, dateText, Price};
         int len = text.length;
-        int start=0;
-        value = fi.gatherInfo();
+        int start=1;
+        value = c.gatherInfo(flightid);
         for (int i = 0; i < len; i++) {
             text[i].setEditable(false);
-            text[i].setText(value[i]);
+            text[i].setText(value.get(i));
         }
         
-        SpinnerModel model = new SpinnerNumberModel(start, start, start+100, 1);
+        SpinnerModel model = new SpinnerNumberModel(start, start, Integer.parseInt(value.get(9)) , 1);
         seatnum.setModel(model);
         
         seatnum.addChangeListener(new ChangeListener() {
             public void stateChanged(ChangeEvent e)
             {
-                int tag = Integer.parseInt(value[9]);
+                int tag = Integer.parseInt(value.get(9));
                 try {
                     seatnum.commitEdit();
                 } catch (ParseException ex) {
@@ -313,6 +290,15 @@ public class buyTicket extends javax.swing.JFrame {
 
     private void buyTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buyTActionPerformed
 
+        int seats = Integer.parseInt(seatnum.getValue().toString());
+        String name = bookingN.getText();
+        
+        c.addTransaction(seats,name,flightid);
+        System.out.println("asdasdsda");
+                
+        transaction tr = new transaction(staff);
+        tr.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_buyTActionPerformed
 
     private void destinationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_destinationActionPerformed
@@ -320,9 +306,7 @@ public class buyTicket extends javax.swing.JFrame {
     }//GEN-LAST:event_destinationActionPerformed
 
     private void cancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelActionPerformed
-        connect conn = new connect();
-        Statement st = conn.getSt();
-        scheduleTable_Staff s1 = new scheduleTable_Staff(st);
+        scheduleTable_Staff s1 = staff;
         s1.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_cancelActionPerformed

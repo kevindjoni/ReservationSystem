@@ -5,9 +5,10 @@ import java.awt.event.ActionListener;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.Timer;
 import javax.swing.table.DefaultTableModel;
@@ -18,76 +19,20 @@ import javax.swing.table.DefaultTableModel;
  */
 public class transaction extends javax.swing.JFrame 
 {
-    private Statement st;
-    private Object[] obj = null;
+    private Control c;
+    private scheduleTable_Staff staff;
     
-    public void fillTable(String query)
-    {
-        try 
-        {
-            ResultSet rs;
-            DefaultTableModel table = new DefaultTableModel();
-            rs = st.executeQuery(query);
-            ResultSetMetaData data = rs.getMetaData();
-            int num = data.getColumnCount();
-            for(int i = 0 ; i < num ; i++)
-            {
-                table.addColumn(data.getColumnLabel(i + 1));
-            }
-            while(rs.next())
-            {
-                obj = new Object[num];
-                for(int i = 0; i < num; i++)
-                {
-                    obj[i] = rs.getObject(i+1);
-                }
-                table.addRow(obj);
-            }
-            transactionTable.setModel(table);
-        } 
-        catch (SQLException ex) 
-        {
-           JOptionPane.showMessageDialog(null, "Error: " + ex);
-        }
-    }
+    public transaction(){ initComponents(); }
     
-    public transaction()
+    public transaction(scheduleTable_Staff s)
     {
+        staff = s;
         initComponents();
-    }
-    
-    public transaction(Statement st) 
-    {
-        initComponents();
-        this.st = st;
         showDate();
         showTime();
-        try 
-        {
-            ResultSet rs;
-            DefaultTableModel table = new DefaultTableModel();
-            rs = st.executeQuery("SELECT * FROM `transactions`");
-            ResultSetMetaData data = rs.getMetaData();
-            int num = data.getColumnCount();
-            for(int i = 0 ; i < num ; i++)
-            {
-                table.addColumn(data.getColumnLabel(i + 1));
-            }
-            while(rs.next())
-            {
-                obj = new Object[num];
-                for(int i = 0; i < num; i++)
-                {
-                    obj[i] = rs.getObject(i+1);
-                }
-                table.addRow(obj);
-            }
-            transactionTable.setModel(table);
-        } 
-        catch (SQLException ex) 
-        {
-           JOptionPane.showMessageDialog(null, "Error: " + ex);
-        }
+        c = new Control();
+        String q = "SELECT * FROM `transactions`";
+        transactionTable.setModel(c.fillTable(staff.isIsLogin(), q));
     }
     
     void showDate()
@@ -238,23 +183,21 @@ public class transaction extends javax.swing.JFrame
     }//GEN-LAST:event_search_transactionActionPerformed
 
     private void backTransactionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backTransactionActionPerformed
-        scheduleTable_Staff t = new scheduleTable_Staff(st);
+        scheduleTable_Staff t = staff;
         t.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_backTransactionActionPerformed
 
     private void printTicketActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_printTicketActionPerformed
-//        int row = transactionTable.getSelectedRow();
-//        int target = (int) transactionTable.getValueAt(row, 0);
-//        String bookingCode = (String) transactionTable.getValueAt(row, 1);
-//        String ticNum = (String) transactionTable.getValueAt(row, 2);
-//        String bookName = (String) transactionTable.getValueAt(row, 3);
-//        String eta = (String) scheduleTable_infoTable.getValueAt(row, 4);
-//        int seats = (int) scheduleTable_infoTable.getValueAt(row, 5);
-//        String destination = (String) scheduleTable_infoTable.getValueAt(row, 6);
-//        String origin = (String) scheduleTable_infoTable.getValueAt(row, 7);
-//        editTable_Admin ed = new editTable_Admin(target,flightnum,airline,etd,eta,seats,destination,origin,st,this);
-//        ed.setVisible(true);
+        int row = transactionTable.getSelectedRow();
+        
+        int ticketCode = Integer.parseInt(transactionTable.getValueAt(row, 0).toString());
+        int ticketNum = Integer.parseInt(transactionTable.getValueAt(row, 1).toString());
+        String ticketName = transactionTable.getValueAt(row, 2).toString();
+        int ticketFlightid = Integer.parseInt(transactionTable.getValueAt(row, 3).toString());
+        
+        TicketPass tp = new TicketPass(ticketCode,ticketNum,ticketName,ticketFlightid);
+        tp.setVisible(true);
     }//GEN-LAST:event_printTicketActionPerformed
 
     /**
