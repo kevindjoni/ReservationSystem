@@ -76,9 +76,6 @@ public class model
                     message = true;
                 }
             }
-            
-            
-            
             return message;
         } catch (SQLException ex) {
             Logger.getLogger(model.class.getName()).log(Level.SEVERE, null, ex);
@@ -127,13 +124,11 @@ public class model
         String[] passvalue = {fNum,airline,etd,eta,
                     destination,origin,year,month,date1,price};
         try {
-            String command = "SELECT * FROM flight WHERE `Flight ID` ='" + ID + "'";
+            String command = "SELECT * FROM `flight` WHERE `Flight ID` ='" + ID + "'";
             ResultSet rs;
             rs = c.getSt().executeQuery(command);
-            
             while (rs.next()) 
             {
-                
                 for(int z=0; z< type.length; z++)
                 {
                     rawvalue[z] = rs.getString(type[z]);
@@ -144,6 +139,7 @@ public class model
                 if(k>=6 && k<=8)
                 {
                     String s= rawvalue[6];
+                    System.out.println(s);
                     String year1=s.substring(0,4);
                     String month1=s.substring(5,7);
                     String day1=s.substring(8,10);
@@ -241,6 +237,7 @@ public class model
                 if(count==true)
                 {
                     queries.add("DELETE FROM `flight` WHERE `Flight ID`='"+id+"'");
+                    queries.add("DELETE FROM `transactions WHERE `Flight ID`='"+id+"'`");
                 }
             }
             for(int i = 0; i < queries.size() ; ++i)
@@ -267,9 +264,9 @@ public class model
     public void updateFlight(String[] i, int eRow)
     {
         try {
-            c.getSt().executeUpdate("UPDATE `flight` SET `flight number`='" + i[7] + "', `airline`='" + i[0] + "', "
-                    + "`eta`='" + i[1] + "', `etd`='" + i[2] + "', `destination`='" + i[3] + "',`origin`='" + i[4] + "', `seats left`='" + i[5] + "' "
-                    + "WHERE `Flight ID`='" + eRow + "'");
+            c.getSt().executeUpdate("UPDATE `flight` SET `flight number`='" + i[6] + "', `airline`='" + i[0] + "', "
+                    + "`eta`='" + i[1] + "', `etd`='" + i[2] + "', `destination`='" + i[3] + "',`origin`='" + i[4] + "', `seats left`='" + i[5] + "' , `price`='"+i[7]+"'"
+                    + ",`date`='"+i[8]+"' WHERE `Flight ID`='" + eRow + "'");
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(null, "Update Error");
         }
@@ -325,6 +322,22 @@ public class model
         {
             c.getSt().executeUpdate("UPDATE `user` SET `Username`='"+u+"', `Password`='"+p+"' WHERE `ID`='"+target+"'");
             System.out.println(target);
+        } 
+        catch (SQLException ex) {
+            Logger.getLogger(edituser.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    public void decreaseSeat(int target, int seat)
+    {
+        try 
+        {   
+            ResultSet rs=c.getSt().executeQuery("SELECT * FROM `flight` WHERE `Flight ID`='"+target+"'");
+            if(rs.next())
+            {
+                int s=rs.getInt("seats left");
+                seat=s-seat;
+                c.getSt().executeUpdate("UPDATE `flight` SET `seats left`='"+seat+"' WHERE `Flight ID`='"+target+"'");
+            }
         } 
         catch (SQLException ex) {
             Logger.getLogger(edituser.class.getName()).log(Level.SEVERE, null, ex);

@@ -28,9 +28,11 @@ public class editTable_Admin extends javax.swing.JFrame {
 //    private String cyear;
 //    private String cday;
     private int price;
+    private String dateNow;
     private int curry;
     private int currm;
     private int currd;
+    private ArrayList<String> prevdata;
 //    private String updatey;
 //    private String updatem;
 //    private String updated;
@@ -52,23 +54,26 @@ public class editTable_Admin extends javax.swing.JFrame {
         initComponents();
 //        cd = new controlData();
     }
-    public editTable_Admin(ArrayList<String> a, scheduleTable admin, int no)
+    public editTable_Admin(ArrayList<String> a, scheduleTable admin, int no, String d)
     {
 //      info = a;
         initComponents();
         eRow = no;
 //        cd = c;
+        this.dateNow=d;
+        this.prevdata=a;
+        this.setDateBox();
         c = new Control();
         mdl=new DefaultComboBoxModel();
         this.admin = admin;
         add = new addTable_Admin();
         Airline1.setModel(c.fillComboBox(add.getAirline()));
+        flightNum.setText(a.get(1));
         h1.setModel(c.fillComboBox(add.getHours()));
         h2.setModel(c.fillComboBox(add.getHours()));
         m1.setModel(c.fillComboBox(add.getMinutes()));
         m2.setModel(c.fillComboBox(add.getMinutes()));
-        setDateBox();
-        Airline1.setSelectedItem(a.get(0));
+        Airline1.setSelectedItem(a.get(2));
         h1.setSelectedItem(a.get(3).substring(0,2));
         m1.setSelectedItem(a.get(3).substring(3,5));
         h2.setSelectedItem(a.get(4).substring(0,2));
@@ -76,9 +81,11 @@ public class editTable_Admin extends javax.swing.JFrame {
         seatnum.setValue(Integer.parseInt(a.get(5)));
         destination.setText(a.get(6));
         origin.setText(a.get(7));
+        destination.setEditable(false);
+        origin.setEditable(false);
         year.setSelectedItem(a.get(8).substring(0,4));
-        month.setSelectedItem(a.get(8).substring(5,7));
-        date.setSelectedItem(a.get(8).substring(8,10));
+        month.setSelectedItem(Integer.parseInt(a.get(8).substring(5,7)));
+        date.setSelectedItem(Integer.parseInt(a.get(8).substring(8,10)));
         c.tryRefresh(admin.isIsLogin(),a.get(8));
         priceUpdate.setValue(Integer.parseInt(a.get(9)));
     }
@@ -422,17 +429,36 @@ public class editTable_Admin extends javax.swing.JFrame {
         String eta = h2.getSelectedItem().toString()+":" + m2.getSelectedItem().toString();
         String des = destination.getText().toString();
         String ori = origin.getText().toString();
-        String seat = (String) seatnum.getValue();
-        String price1 = (String) priceUpdate.getValue();
+        String seat =  seatnum.getValue().toString();
+        String price1 = priceUpdate.getValue().toString();
         String num = flightNum.getText().toString();
-        date1 = year.getSelectedItem().toString() + "-" 
-                + month.getSelectedItem().toString() + "-" 
-                + date.getSelectedItem().toString();
+        String m=null;
+        String d=null;
+        curry = Integer.parseInt(dateNow.substring(0, 4));
+        currm = Integer.parseInt(dateNow.substring(5, 7));
+        currd = Integer.parseInt(dateNow.substring(8, 10));
+        if(month.getSelectedItem().toString().length()<2)
+        {
+            m="0"+month.getSelectedItem();
+        }
+        else
+        {
+            m=(String) month.getSelectedItem();
+        }
+        if(date.getSelectedItem().toString().length()<2)
+        {
+            d="0"+date.getSelectedItem();
+        }
+        else
+        {
+            d=(String) date.getSelectedItem();
+        }
+        date1 = year.getSelectedItem().toString() + "-" + m+ "-" + d;
         
         boolean count;
-        int[] dateToday = {curry,currm,currd};
-        String[] items = {airlineName, eta,etd,des,ori,seat,num,price1};
         
+        int[] dateToday = {curry,currm,currd};
+        String[] items = {airlineName, eta,etd,des,ori,seat,num,price1,date1};
         count  = c.validateInput(dateToday,items);
         
          
@@ -440,9 +466,12 @@ public class editTable_Admin extends javax.swing.JFrame {
             c.tryUpdateFlight(items, eRow );
             this.dispose();
             scheduleTable s = admin;
+            s.RefreshTable();
             s.setVisible(true);
-        } else {
-            error1.setText("You cannot add a flight after on the same day. Please recheck the date!");
+        } 
+        else 
+        {
+            error1.setText("Invalid Data Input");
         }
         
     }//GEN-LAST:event_jButton1_editSubmissionActionPerformed
@@ -483,6 +512,9 @@ public class editTable_Admin extends javax.swing.JFrame {
 
     private void exitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitActionPerformed
         // TODO add your handling code here:
+        scheduleTable s = admin;
+        s.RefreshTable();
+        s.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_exitActionPerformed
 

@@ -153,8 +153,6 @@ public class addTable_Admin extends javax.swing.JFrame
     public String[] getMinutes() {
         return minutes;
     }
-    
-    
    
     
 
@@ -467,7 +465,24 @@ public class addTable_Admin extends javax.swing.JFrame
         curry = Integer.parseInt(dateNow.substring(0, 4));
         currm = Integer.parseInt(dateNow.substring(5, 7));
         currd = Integer.parseInt(dateNow.substring(8, 10));
-        
+        String m=null;
+        String d=null;
+        if(month.getSelectedItem().toString().length()<2)
+        {
+            m="0"+month.getSelectedItem();
+        }
+        else
+        {
+            m=(String) month.getSelectedItem();
+        }
+        if(date.getSelectedItem().toString().length()<2)
+        {
+            d="0"+date.getSelectedItem();
+        }
+        else
+        {
+            d=(String) date.getSelectedItem();
+        }
         String airlineName = Airline.getSelectedItem().toString();
         String eta = h1.getSelectedItem().toString() + ":" + m1.getSelectedItem().toString();
         String etd = h2.getSelectedItem().toString() + ":" + m2.getSelectedItem().toString();
@@ -476,7 +491,7 @@ public class addTable_Admin extends javax.swing.JFrame
         String seat = seatnum.getValue().toString();
         String num = flightNum.getText().toString();
         String price1 = price.getValue().toString();
-        String dateflight = year.getSelectedItem().toString() + "-" + month.getSelectedItem().toString() + "-" + date.getSelectedItem().toString();
+        String dateflight = year.getSelectedItem().toString() + "-" + m + "-" + d;
         
         boolean count;
         int[] dateToday = {curry,currm,currd};
@@ -488,10 +503,14 @@ public class addTable_Admin extends javax.swing.JFrame
         {
             c.tryAddFlight(items);
             scheduleTable st = admin;
+            st.RefreshTable();
             st.setVisible(true);
             this.dispose();
         }
-            
+        else
+        {
+            error.setText("Invalid Data Input!");
+        }
     }//GEN-LAST:event_add_AddActionPerformed
 
     private void originActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_originActionPerformed
@@ -504,6 +523,9 @@ public class addTable_Admin extends javax.swing.JFrame
 
     private void cancel_Add1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancel_Add1ActionPerformed
         // TODO add your handling code here:
+        scheduleTable st = admin;
+            st.RefreshTable();
+            st.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_cancel_Add1ActionPerformed
 

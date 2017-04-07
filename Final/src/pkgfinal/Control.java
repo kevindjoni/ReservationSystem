@@ -89,6 +89,7 @@ public class Control
             String command1 = "INSERT INTO `transactions` (`Booking Code`, `Number of Tickets`, `Booking Name`, `Flight ID`) VALUES ('"+code+"', '"
                     +ticket+"', '"+name+"', '"+id+"')";
             m.addData(command1);
+            m.decreaseSeat(id, ticket);
         }
         else
         {
@@ -155,26 +156,26 @@ public class Control
     
     public boolean validateInput(int[] d, String[] i) // flight input add validation
     { 
-        boolean message = false; 
+        boolean message = true; 
         for(int z = 0; z < i.length; z++) 
         { 
             if(i[z].equals("") || i[z].equals("0")) 
             { 
-                message = true; 
+                message = false; 
             } 
         } 
-        if (!message)  
+        if (message)  
         { 
-            if (d[0] < Integer.parseInt(i[i.length - 1].substring(0,4))) { 
-                message = true; 
+            if (d[0] > Integer.parseInt(i[i.length - 1].substring(0,4))) { 
+                message = false; 
             } else if (d[0] == Integer.parseInt(i[i.length - 1].substring(0,4))) { 
-                if (d[1] < Integer.parseInt(i[i.length - 1].substring(5,7))) { 
-                    message = true; 
+                if (d[1] > Integer.parseInt(i[i.length - 1].substring(5,7))) { 
+                    message = false; 
                 } else if (d[1] == Integer.parseInt(i[i.length - 1].substring(5,7))) { 
-                    if (d[2] < Integer.parseInt(i[i.length - 1].substring(8,10))) { 
-                        message = true; 
+                    if (d[2] > Integer.parseInt(i[i.length - 1].substring(8,10))) { 
+                        message = false;
                     } 
-                } 
+                }           
             } 
         } 
         return message; 

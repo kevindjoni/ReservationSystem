@@ -125,10 +125,8 @@ public class Login extends javax.swing.JFrame {
                 scheduleTable_Staff homeS = new scheduleTable_Staff();
                 homeS.setVisible(true);
             }
+            this.dispose();
         }
-        
-        this.dispose();
-        
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**

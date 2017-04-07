@@ -143,6 +143,9 @@ public class adduser extends javax.swing.JFrame {
 
     private void cancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelActionPerformed
         // TODO add your handling code here:
+        v.getTable1().setModel(c.fillTable(v.getAdmin().isIsLogin(),"SELECT * FROM `user`"));
+        v.setVisible(true);
+        this.dispose();
         this.dispose();
     }//GEN-LAST:event_cancelActionPerformed
 

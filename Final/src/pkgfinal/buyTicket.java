@@ -294,7 +294,6 @@ public class buyTicket extends javax.swing.JFrame {
         String name = bookingN.getText();
         
         c.addTransaction(seats,name,flightid);
-        System.out.println("asdasdsda");
                 
         transaction tr = new transaction(staff);
         tr.setVisible(true);
@@ -307,6 +306,7 @@ public class buyTicket extends javax.swing.JFrame {
 
     private void cancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelActionPerformed
         scheduleTable_Staff s1 = staff;
+        s1.RefreshTable();
         s1.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_cancelActionPerformed

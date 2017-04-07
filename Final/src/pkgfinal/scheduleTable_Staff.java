@@ -61,8 +61,10 @@ public class scheduleTable_Staff extends javax.swing.JFrame
     public boolean isIsLogin() {
         return isLogin;
     }
-    
-    
+    public void RefreshTable()
+    {
+        table1.setModel(c.fillTable(this.isLogin,"SELECT * FROM `flight`"));
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -284,12 +286,19 @@ public class scheduleTable_Staff extends javax.swing.JFrame
     }//GEN-LAST:event_jTextField_SearchActionPerformed
 
     private void buyTicActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buyTicActionPerformed
+        try
+        {
         int row = table1.getSelectedRow();
         int flightid = (int) table1.getValueAt(row, 0);
 
         buyTicket bt = new buyTicket(flightid, this);
         bt.setVisible(true);
         this.dispose();
+        }
+        catch(ArrayIndexOutOfBoundsException ex)
+        {
+            
+        }
     }//GEN-LAST:event_buyTicActionPerformed
 
     private void viewTranActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewTranActionPerformed
@@ -300,8 +309,7 @@ public class scheduleTable_Staff extends javax.swing.JFrame
 
     private void refreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshActionPerformed
         c.tryRefresh(isLogin, date);
-        table1.setModel(c.fillTable(isLogin, date));
-        
+        table1.setModel(c.fillTable(this.isLogin,"SELECT * FROM `flight`"));
     }//GEN-LAST:event_refreshActionPerformed
 
     private void jTextField_SearchKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField_SearchKeyReleased

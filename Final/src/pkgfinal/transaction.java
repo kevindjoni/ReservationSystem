@@ -184,20 +184,28 @@ public class transaction extends javax.swing.JFrame
 
     private void backTransactionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backTransactionActionPerformed
         scheduleTable_Staff t = staff;
+        t.RefreshTable();
         t.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_backTransactionActionPerformed
 
     private void printTicketActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_printTicketActionPerformed
+        try
+        {
         int row = transactionTable.getSelectedRow();
         
         int ticketCode = Integer.parseInt(transactionTable.getValueAt(row, 0).toString());
         int ticketNum = Integer.parseInt(transactionTable.getValueAt(row, 1).toString());
         String ticketName = transactionTable.getValueAt(row, 2).toString();
         int ticketFlightid = Integer.parseInt(transactionTable.getValueAt(row, 3).toString());
-        
-        TicketPass tp = new TicketPass(ticketCode,ticketNum,ticketName,ticketFlightid);
+            System.out.println(ticketFlightid);
+        TicketPass tp = new TicketPass(ticketCode,ticketNum,ticketName,ticketFlightid,this);
         tp.setVisible(true);
+        }
+        catch(ArrayIndexOutOfBoundsException ex)
+        {
+            
+        }
     }//GEN-LAST:event_printTicketActionPerformed
 
     /**

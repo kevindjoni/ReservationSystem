@@ -40,6 +40,10 @@ public class scheduleTable extends javax.swing.JFrame
         
         
     }
+    public void RefreshTable()
+    {
+        table1.setModel(c.fillTable(this.isLogin,"SELECT * FROM `flight`"));
+    }
 //    public scheduleTable(controlData cd)
 //    {
 //        initComponents();
@@ -329,6 +333,8 @@ public class scheduleTable extends javax.swing.JFrame
     }//GEN-LAST:event_add_AdminActionPerformed
 
     private void edit_AdminActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_edit_AdminActionPerformed
+        try
+        {
             int row = table1.getSelectedRow();
             int id = Integer.parseInt(table1.getValueAt(row, 0).toString());
             ArrayList<String> arr = new ArrayList<>();
@@ -349,10 +355,16 @@ public class scheduleTable extends javax.swing.JFrame
                 arr.add( table1.getValueAt(row, z).toString() );
             }
             
-            editTable_Admin ed = new editTable_Admin(arr,this,id);
+            editTable_Admin ed = new editTable_Admin(arr,this,id,date);
             ed.setVisible(true);
+            this.dispose();
+        }
+        catch(ArrayIndexOutOfBoundsException ex)
+        {
+            
+        }
     }//GEN-LAST:event_edit_AdminActionPerformed
-
+    
     private void refreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshActionPerformed
         c.tryRefresh(isLogin, date);
         table1.setModel(c.fillTable(this.isLogin,"SELECT * FROM `flight`"));
